@@ -1,5 +1,5 @@
-import HomePage from "@/container/home";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <HomePage />;
+  return redirect("/tickets");
 }
