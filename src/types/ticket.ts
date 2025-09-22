@@ -82,3 +82,10 @@ export interface QueryTicketsDto {
   sortBy?: SortBy;
   sortOrder?: SortOrder;
 }
+
+export interface CreateTicketDto {
+  title: string;
+  description: string;
+  status: TicketStatus;
+  priority: TicketPriority;
+}

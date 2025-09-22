@@ -3,6 +3,8 @@ import {
   TicketListResponse,
   ApiResponse,
   QueryTicketsDto,
+  Ticket,
+  CreateTicketDto,
 } from "@/types/ticket";
 
 export const TicketService = {
@@ -43,5 +45,12 @@ export const TicketService = {
     }`;
     const response = await api.get<ApiResponse<TicketListResponse>>(url);
     return response.data.data;
+  },
+
+  createTicket: async (
+    params: CreateTicketDto
+  ): Promise<ApiResponse<Ticket>> => {
+    const response = await api.post<ApiResponse<Ticket>>("/tickets", params);
+    return response.data;
   },
 };

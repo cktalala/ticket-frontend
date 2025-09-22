@@ -1,7 +1,11 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { Card, Input, Select, Button, Pagination, message } from "antd";
-import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  ReloadOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import styled from "styled-components";
 import {
   Ticket,
@@ -22,6 +26,7 @@ import {
 } from "./components";
 import { TicketService } from "@/services/ticket";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useRouter } from "next/navigation";
 
 const TicketsContainer: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -36,6 +41,7 @@ const TicketsContainer: React.FC = () => {
   const [pageSize] = useState(10);
   const [searchValue, setSearchValue] = useState("");
   const [totalTickets, setTotalTickets] = useState(0);
+  const router = useRouter();
 
   const debouncedSearchValue = useDebounce(searchValue, 500);
 
@@ -148,6 +154,16 @@ const TicketsContainer: React.FC = () => {
     <Container>
       <Header>
         <Title>Tickets</Title>
+        <Button
+          icon={<PlusOutlined />}
+          type="primary"
+          onClick={() => {
+            router.push("/tickets/create");
+          }}
+          loading={loading}
+        >
+          Create Ticket
+        </Button>
       </Header>
 
       <FiltersContainer>
@@ -267,6 +283,9 @@ const Container = styled.div`
 
 const Header = styled.div`
   margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Title = styled.h1`
