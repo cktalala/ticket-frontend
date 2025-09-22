@@ -13,16 +13,39 @@ import {
   Alert,
   Space,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 
-const CreateTicketContainer: React.FC = () => {
+type TicketDetailContainerProps = {
+  params: { id: string };
+};
+
+const TicketDetailContainer: React.FC<TicketDetailContainerProps> = ({
+  params,
+}) => {
   const [form] = Form.useForm();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(
+    null
+  );
+
   const [api, contextHolder] = notification.useNotification();
+
+  const { data: ticket, refetch } = useQuery({
+    queryKey: ["ticket", params.id],
+    queryFn: () => TicketService.getTicket(params.id),
+  });
+
+  useEffect(() => {
+    refetch();
+    if (ticket) {
+      form.setFieldsValue(ticket.data);
+    }
+  }, [ticket, form, refetch]);
 
   const validateTitle = (_: unknown, value: string) => {
     if (!value || value.trim().length === 0) {
@@ -52,20 +75,19 @@ const CreateTicketContainer: React.FC = () => {
     try {
       setLoading(true);
 
-      await TicketService.createTicket(values);
+      await TicketService.updateTicket(params.id, values);
 
+      setSubmitStatus("success");
       api.success({
         message: "สำเร็จ!",
-        description: "สร้างตั๋วเรียบร้อยแล้ว",
+        description: "อัพเดตข้อมูลตั๋วเรียบร้อยแล้ว",
         duration: 3,
       });
 
-      form.resetFields();
-      setTimeout(() => {
-        router.push("/tickets");
-      }, 2000);
+      refetch();
     } catch (error) {
-      let errorMsg = "เกิดข้อผิดพลาดในการสร้างตั๋ว";
+      setSubmitStatus("error");
+      let errorMsg = "เกิดข้อผิดพลาดในการอัพเดตข้อมูลตั๋ว";
 
       if (error instanceof AxiosError) {
         errorMsg = error.response?.data?.message || errorMsg;
@@ -86,16 +108,17 @@ const CreateTicketContainer: React.FC = () => {
       {contextHolder}
       <Header>
         <Button onClick={() => router.push("/tickets")}>กลับ</Button>
-        <Title>Create Ticket</Title>
+        <Title>Ticket Detail</Title>
       </Header>
 
-      <Card>
+      <Card title={ticket?.data.title}>
         <Form layout="vertical" form={form} onFinish={onSubmit}>
           <Form.Item
             label="หัวข้อ / Title"
             name="title"
             rules={[{ validator: validateTitle }]}
             hasFeedback
+            initialValue={ticket?.data.title}
           >
             <Input placeholder="กรอกหัวข้อตั๋ว (5 ตัวอักษร)" />
           </Form.Item>
@@ -105,6 +128,7 @@ const CreateTicketContainer: React.FC = () => {
             name="description"
             rules={[{ validator: validateDescription }]}
             hasFeedback
+            initialValue={ticket?.data.description}
           >
             <Input.TextArea
               rows={4}
@@ -121,6 +145,7 @@ const CreateTicketContainer: React.FC = () => {
                 name="status"
                 rules={[{ required: true, message: "กรุณาเลือกสถานะ" }]}
                 hasFeedback
+                initialValue={ticket?.data.status}
               >
                 <Select
                   placeholder="เลือกสถานะ / Select status"
@@ -138,6 +163,7 @@ const CreateTicketContainer: React.FC = () => {
                 name="priority"
                 rules={[{ required: true, message: "กรุณาเลือกความสำคัญ" }]}
                 hasFeedback
+                initialValue={ticket?.data.priority}
               >
                 <Select
                   placeholder="เลือกความสำคัญ / Select priority"
@@ -153,8 +179,13 @@ const CreateTicketContainer: React.FC = () => {
 
           <Form.Item>
             <Space>
-              <Button type="primary" htmlType="submit" loading={loading}>
-                {loading ? "Creating..." : "Create Ticket"}
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                disabled={submitStatus === "success"}
+              >
+                {loading ? "Updating..." : "Update Ticket"}
               </Button>
               <Button
                 onClick={() => {
@@ -172,7 +203,7 @@ const CreateTicketContainer: React.FC = () => {
   );
 };
 
-export default CreateTicketContainer;
+export default TicketDetailContainer;
 
 const Container = styled.div`
   padding: 24px;
@@ -181,10 +212,10 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  margin-bottom: 24px;
   display: flex;
   align-items: center;
   gap: 16px;
+  margin-bottom: 24px;
 `;
 
 const Title = styled.h1`

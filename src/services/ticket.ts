@@ -5,6 +5,7 @@ import {
   QueryTicketsDto,
   Ticket,
   CreateTicketDto,
+  UpdateTicketDto,
 } from "@/types/ticket";
 
 export const TicketService = {
@@ -51,6 +52,22 @@ export const TicketService = {
     params: CreateTicketDto
   ): Promise<ApiResponse<Ticket>> => {
     const response = await api.post<ApiResponse<Ticket>>("/tickets", params);
+    return response.data;
+  },
+
+  getTicket: async (id: string): Promise<ApiResponse<Ticket>> => {
+    const response = await api.get<ApiResponse<Ticket>>(`/tickets/${id}`);
+    return response.data;
+  },
+
+  updateTicket: async (
+    id: string,
+    params: UpdateTicketDto
+  ): Promise<ApiResponse<Ticket>> => {
+    const response = await api.patch<ApiResponse<Ticket>>(
+      `/tickets/${id}`,
+      params
+    );
     return response.data;
   },
 };

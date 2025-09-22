@@ -121,7 +121,15 @@ const TicketsContainer: React.FC = () => {
   };
 
   const handleSortChange = (field: string, order: string) => {
-    setSort({ field: field as any, order: order as "asc" | "desc" });
+    setSort({
+      field: field as
+        | "createdAt"
+        | "updatedAt"
+        | "title"
+        | "priority"
+        | "status",
+      order: order as "asc" | "desc",
+    });
     setCurrentPage(1);
   };
 

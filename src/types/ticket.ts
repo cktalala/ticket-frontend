@@ -89,3 +89,10 @@ export interface CreateTicketDto {
   status: TicketStatus;
   priority: TicketPriority;
 }
+
+export interface UpdateTicketDto {
+  title?: string;
+  description?: string;
+  status?: TicketStatus;
+  priority?: TicketPriority;
+}

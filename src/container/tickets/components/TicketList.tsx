@@ -1,8 +1,9 @@
 import React from "react";
-import { Card, Tag, Typography, Space } from "antd";
+import { Card, Tag, Typography, Space, Button, Flex } from "antd";
 import { CalendarOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { Ticket, TicketStatus, TicketPriority } from "@/types/ticket";
+import { useRouter } from "next/navigation";
 
 const { Text, Title } = Typography;
 
@@ -74,6 +75,7 @@ const getPriorityLabel = (priority: TicketPriority): string => {
 };
 
 const TicketList: React.FC<TicketListProps> = ({ tickets }) => {
+  const router = useRouter();
   return (
     <div>
       {tickets.map((ticket) => (
@@ -96,14 +98,25 @@ const TicketList: React.FC<TicketListProps> = ({ tickets }) => {
           </TicketHeader>
 
           <TicketMeta>
-            <MetaItem>
-              <CalendarOutlined />
-              <Text>Created: {formatDate(ticket.createdAt)}</Text>
-            </MetaItem>
-            <MetaItem>
-              <ClockCircleOutlined />
-              <Text>Updated: {formatDate(ticket.updatedAt)}</Text>
-            </MetaItem>
+            <Flex wrap="wrap" gap={16}>
+              <MetaItem>
+                <CalendarOutlined />
+                <Text>Created: {formatDate(ticket.createdAt)}</Text>
+              </MetaItem>
+              <MetaItem>
+                <ClockCircleOutlined />
+                <Text>Updated: {formatDate(ticket.updatedAt)}</Text>
+              </MetaItem>
+            </Flex>
+
+            <Button
+              type="primary"
+              onClick={() => {
+                router.push(`/tickets/${ticket.id}`);
+              }}
+            >
+              View or Edit Ticket
+            </Button>
           </TicketMeta>
         </TicketCard>
       ))}
@@ -144,6 +157,8 @@ const TicketMeta = styled.div`
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid #f0f0f0;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const MetaItem = styled.div`
