@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ticket Frontend
 
-## Getting Started
+A modern ticket management system built with Next.js, TypeScript, and Ant Design.
 
-First, run the development server:
+## Features
+
+- Create, view, and manage tickets
+- Real-time ticket status updates
+- Priority-based ticket organization
+- Responsive design with Ant Design components
+- Form validation and error handling
+- Debounced search functionality
+
+## Tech Stack
+
+- **Framework**: Next.js 15.5.3 with Turbopack
+- **Language**: TypeScript
+- **UI Library**: Ant Design 5.27.4
+- **Styling**: Styled Components
+- **State Management**: TanStack Query (React Query)
+- **HTTP Client**: Axios
+- **Package Manager**: Yarn
+
+## Prerequisites
+
+- Node.js (version 18 or higher)
+- Yarn package manager
+
+## Installation
+
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd ticket-frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Development
 
-## Learn More
+Start the development server:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+yarn dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available Scripts
 
-## Deploy on Vercel
+- `yarn dev` - Start development server with Turbopack
+- `yarn build` - Build the application for production
+- `yarn start` - Start the production server
+- `yarn lint` - Run ESLint for code quality checks
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/                 # Next.js app router pages
+│   ├── tickets/        # Ticket-related pages
+│   └── layout.tsx      # Root layout
+├── components/         # Reusable UI components
+├── container/          # Page containers with business logic
+│   ├── create-ticket/  # Create ticket functionality
+│   ├── ticket-detail/  # Ticket detail view
+│   └── tickets/        # Ticket list view
+├── hooks/              # Custom React hooks
+├── provider/           # Context providers
+├── services/           # API services
+└── types/              # TypeScript type definitions
+```
+
+## Features Overview
+
+### Ticket Management
+
+- Create new tickets with title, description, status, and priority
+- View ticket details
+- List all tickets with search and filtering
+- Real-time updates using React Query
+
+### Form Validation
+
+- Title validation (minimum 5 characters)
+- Description validation (maximum 5000 characters)
+- Required field validation for status and priority
+
+### UI/UX
+
+- Responsive design
+- Loading states and error handling
+- Toast notifications for user feedback
+- Empty states and skeleton loading
+
+## API Integration
+
+The application integrates with a backend API for ticket operations:
+
+- `GET /tickets` - Fetch all tickets
+- `POST /tickets` - Create new ticket
+- `GET /tickets/:id` - Fetch ticket details
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run linting: `yarn lint`
+5. Submit a pull request
+
+## License
+
+This project is private and proprietary.

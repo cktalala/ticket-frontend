@@ -12,6 +12,9 @@ import {
   Select,
   Alert,
   Space,
+  Modal,
+  Popconfirm,
+  PopconfirmProps,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -103,12 +106,54 @@ const TicketDetailContainer: React.FC<TicketDetailContainerProps> = ({
     }
   };
 
+  const cancel: PopconfirmProps["onCancel"] = (e) => {
+    console.log(e);
+  };
+
+  const onDelete = async () => {
+    try {
+      await TicketService.deleteTicket(params.id);
+      router.push("/tickets");
+      api.success({
+        message: "สำเร็จ!",
+        description: "ลบตั๋วเรียบร้อยแล้ว",
+        duration: 3,
+      });
+    } catch (error) {
+      let errorMsg = "เกิดข้อผิดพลาดในการลบตั๋ว";
+
+      if (error instanceof AxiosError) {
+        errorMsg = error.response?.data?.message || errorMsg;
+      }
+
+      api.error({
+        message: "ล้มเหลว!",
+        description: errorMsg,
+        duration: 5,
+      });
+    }
+  };
+
   return (
     <Container>
       {contextHolder}
       <Header>
-        <Button onClick={() => router.push("/tickets")}>กลับ</Button>
-        <Title>Ticket Detail</Title>
+        <Section>
+          <Button onClick={() => router.push("/tickets")}>กลับ</Button>
+          <Title>Ticket Detail</Title>
+        </Section>
+        <Popconfirm
+          title="Delete the task"
+          description="Are you sure to delete this task?"
+          onConfirm={onDelete}
+          onCancel={cancel}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button type="primary" danger>
+            ลบตั๋ว
+          </Button>
+        </Popconfirm>
       </Header>
 
       <Card title={ticket?.data.title}>
@@ -216,9 +261,17 @@ const Header = styled.div`
   align-items: center;
   gap: 16px;
   margin-bottom: 24px;
+  justify-content: space-between;
 `;
 
 const Title = styled.h1`
   font-size: 24px;
   font-weight: 600;
+`;
+
+const Section = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
 `;

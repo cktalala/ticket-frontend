@@ -70,4 +70,9 @@ export const TicketService = {
     );
     return response.data;
   },
+
+  deleteTicket: async (id: string): Promise<ApiResponse<Ticket>> => {
+    const response = await api.delete<ApiResponse<Ticket>>(`/tickets/${id}`);
+    return response.data;
+  },
 };
